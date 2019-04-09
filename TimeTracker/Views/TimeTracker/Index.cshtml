@@ -1,0 +1,226 @@
+﻿@using System.Globalization
+@using System.Linq
+@model Dictionary<DateTime, int>
+@{
+    SelectList monthNames = new SelectList(DateTimeFormatInfo.CurrentInfo.MonthNames.Reverse().Skip(1).Reverse());
+    var month = DateTime.Now.ToString("MMMM", new CultureInfo("en-US"));
+    var year = DateTime.Now.ToString("yyyy");
+    int days = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+    var dayOfWeekNumber = int.Parse(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).DayOfWeek.ToString("D"));
+    var prevMonth = DateTime.DaysInMonth(DateTime.Now.Year, (DateTime.Now.Month) % 12);
+    dayOfWeekNumber = dayOfWeekNumber == 0 ? 7 : dayOfWeekNumber;
+
+    var today = DateTime.Now.Day;
+    var dayOfWeekName = DateTime.Now.DayOfWeek.ToString();
+    int lastDays = 42 - days - dayOfWeekNumber + 1;
+    var firstDayOfTheMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+    DateTime startDate = firstDayOfTheMonth;
+}
+
+@functions
+{
+    string checkColor(int hours)
+    {
+        if (hours == 0)
+        {
+            return "stylish-color";
+        }else if (hours <= 4)
+        {
+            return "green accent-4";
+        }
+        else if (hours > 8)
+        {
+            return "deep-orange";
+        }
+        return "";
+    }
+
+}
+<main class="calendar-contain">
+    <section class="title-bar">
+        <button class="title-bar__burger">
+            <span class="burger__lines">Toggle Menu</span>
+        </button>
+        <span class="title-bar__year">
+            Calendar > @month @year
+        </span>
+        <div class="title-bar__controls">
+            <div class="title-bar__minimize"></div>
+            <div class="title-bar__maximize"></div>
+            <div class="title-bar__close"></div>
+        </div>
+    </section>
+
+    <aside class="calendar__sidebar">
+        <div class="sidebar__nav">
+            <!-- Icons by Icons8 -->
+            <span class="sidebar__nav-item"><img class="icon icons8-Plus-Math" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAWUlEQVRYR+2WMQoAIAgA9f+PrsWmEMQSEa7Z8rzEUmle2pxfABhvYFkPpQtJb7TEAGAAAxgoM3AO/v1YXoPPm4TtANHKy64AAAxgAANjDERB3bjXXzEA8w1s3k4WIU0YaEoAAAAASUVORK5CYII="></span>
+            <span class="sidebar__nav-item"><img class="icon icons8-Share" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB+klEQVRYR+2W0VEdMQxFDxUQKoBUkFABUAFQAaGDUEFCBQkVABUAFRAqgFRAUgFQQTJnxprx2/V67f3h5+nnzfNK8vXVteQN3tk23nl/1gCWMrAD/AD2UwlvgTPgtbekSwB8AJ4Bf3Nz84+9IJYAuAJOgAfgKGNgD7gGvvSwsATAH2Ab2MpOKxsvgN9kodl6AHha6279tRyAa5ZFE4R6UBez1gogaM8T/gKO08JNJsjw+ZmAVEG0AMg3Pwf8/wRsDjK/AZ+TBr6lbxfA1xqCOQDS7um0A8BTa1L+fSBC/0u/lsfJ0mQ55gCE4KyplPaYJ1czVWHWAHidLoG/mfB6AIQgvTGnqXSj+BoAaTusBTegCRbusnKthNUABP157Rv2XHGxVd/XylAD8C+lmtNJDVQ0KH2KeaaSDxuL104hhsrnmIhh5bWMxmWHHMWXABjwODFsdhtAdMWXANSGzaSYMkpCvE3DqgQgar902DiW7ZKl+JEWSgBKCUITttvhO2Coh1r8qKeUAASFpWHTMu+jhKX4UQmnRFgaNp7Ufu9Aqpk+MYxyP9mTyZVnW+0a2vu9RrZSBeWLJ9qr31wTqKaf3+18ce0iRtr1s7WP3ow9TcauJr0CqpkbullMzqpzD4BIZHLBeOpPafF3OqWbCrLZlgBoTt7iuAawZuA/xAh3Ifk/Dm0AAAAASUVORK5CYII="></span>
+            <span class="sidebar__nav-item"><img class="icon icons8-Up" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAxklEQVRYR+3VwQ2DMAyF4Z8NOkI36AodpZ2sjMAoHaWdoJWlIEXI4RHnwMWROAH2ZxuSiZPXdHJ+EjDagUcZ4Rwd5QjAkr9K4icQQkQBdfK1+BAiAvCShxG9gG3b6xGExtED8Gb+K6VbnNA3cRTQCl4DzNKNOALYC7oFdCMUQFXkAboQCvAGbkDrF2sBasQXuAIfb7NSgAtwB5bGTrcHWBFWhF3uUgC1wyqAen/4NExAdiA7kB3IDmQH5GGjHhg9DVV8eT8Bf2HqNiEP+isaAAAAAElFTkSuQmCC"></span>
+            <span class="sidebar__nav-item"><img class="icon icons8-Down" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA4UlEQVRYR+2WgQnCMBBFXzdwBSdwBUfRyXQER3EUN1AOEgnxLrkkhYCkUFpI7/+Xf1fajcnHNtmfBTCawDu0sFunuzAYL4CVwEpgJbAS+P8EDsAZeBj/DbUELsAznKpE7WMkxSfgCtwVhRKAmN+AF3AM1x+JGkAUkUINwgKo1X1BagDyYElMA3Cbi7gHoASRAzSZtwBYEClAs3krgAYhQxbnI73XBrbrLdCK0p3m69bbYv79e2cgF9Agms17WpCCdPU830lvAlFHIORw93xvALO33oXRBLw+uw/hsHEUmJ7ABzErNiGyzfJcAAAAAElFTkSuQmCC"></span>
+        </div>
+        <h2 class="sidebar__heading">@dayOfWeekName<br>@month @today</h2>
+        <ul class="sidebar__list">
+            <li class="sidebar__list-item sidebar__list-item--complete"><span class="list-item__time">8.30</span> Team Meeting</li>
+            <li class="sidebar__list-item sidebar__list-item--complete"><span class="list-item__time">10.00</span> Lunch with Sasha</li>
+            <li class="sidebar__list-item"><span class="list-item__time">2.30</span> Design Review</li>
+            <li class="sidebar__list-item"><span class="list-item__time">4.00</span> Get Groceries</li>
+        </ul>
+    </aside>
+
+    <section class="calendar__days">
+        <section class="calendar__top-bar">
+            <span class="top-bar__days">Mon</span>
+            <span class="top-bar__days">Tue</span>
+            <span class="top-bar__days">Wed</span>
+            <span class="top-bar__days">Thu</span>
+            <span class="top-bar__days">Fri</span>
+            <span class="top-bar__days">Sat</span>
+            <span class="top-bar__days">Sun</span>
+        </section>
+        <section class="calendar__week">
+
+            @for (int k = prevMonth - dayOfWeekNumber + 2; k <= prevMonth; k++)
+            {
+                <div class="calendar__day inactive">
+                    <span class="calendar__date">@k</span>
+                </div>
+            }
+            @for (int k = 1; k <= 7 - dayOfWeekNumber + 1; k++)
+            {
+                var hours = Model.FirstOrDefault(d => d.Key.Day == k).Value;
+                if (k == DateTime.Now.Day)
+                {
+
+                    <div class="@("calendar__day active today " + checkColor(hours))">
+                        <span class="calendar__date">@k</span>
+                        <span class="calendar__task calendar__task--today"><span>@hours</span> <span>hours</span></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="@("calendar__day active " + checkColor(hours))">
+                        <span class="calendar__date">@k</span>
+                        <span class="calendar__task"><span>@hours</span> <span>hours</span></span>
+                    </div>
+                }
+            }
+
+        </section>
+
+        <section class="calendar__week">
+            @for (int i = 0, j = 7 - dayOfWeekNumber + 1; i < 35; i++, j++)
+            {
+                DateTime date = startDate.AddDays(j);
+                var hours = Model.FirstOrDefault(d => d.Key.Day == date.Day).Value;
+
+                if (i % 7 == 0 && i > 0)
+                {
+                @:</section><section class="calendar__week">
+                }
+
+                if (j >= days)
+                {
+
+                    <div class="calendar__day inactive">
+                        <span class="calendar__date">@date.Day</span>
+                    </div>
+                }
+                else
+                {
+                    if (date.Day == DateTime.Now.Day)
+                    {
+
+                        <div class="@("calendar__day active today " + checkColor(hours))">
+                            <span class="calendar__date">@date.Day</span>
+                            <span class="calendar__task calendar__task--today"><span>@hours</span> <span>hours</span></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="@("calendar__day active " + checkColor(hours))">
+                            <span class="calendar__date">@date.Day</span>
+                            <span class="calendar__task"><span>@hours</span> <span>hours</span></span>
+                        </div>
+                    }
+                }
+            }
+        </section>
+    </section>
+</main>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Time Tracker</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="font-weight-bold">&times;</span>
+                </button>
+            </div>
+            <form class="modal-form" onsubmit="return false;">
+                <div class="modal-body">
+                    <span class="text-danger"></span>
+                    <div class="md-form">
+                        <input type="date" id="date" name="date" class="form-control" min="@(DateTime.Now.ToString("yyyy-MM-01"))" max="@(DateTime.Now.ToString("yyyy-MM-") + days)">
+                        <label for="date" class="input-active">Date</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="number" id="hours" name="hours" class="form-control" min="0" max="24">
+                        <label for="hours" class="input-active">Hours</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button data-toggle="modal" data-target="#exampleModalCenter" hidden="hidden" id="modal"></button>
+
+@section Scripts{
+    <script>
+        var element;
+        var date = new Date();
+        var toggleModal = $('#modal');
+        var inputDate = $('.modal-body').children().children().eq(0);
+        var inputHours = $('.modal-body').children().children().eq(2);
+        var modalForm = $('.modal-form');
+        var spanError = $('.modal-body > span');
+
+        $('body').delegate('.calendar__day.active', 'click', function () {
+            element = $(this);
+            toggleModal.click();
+            inputDate.val(date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + (element.children().eq(0).html())).slice(-2));
+            inputHours.val(element.children().eq(1).children().eq(0).html());
+        });
+        $('body').delegate('.modal-form button', 'click', function () {
+            if (modalForm[0].checkValidity()) {
+                var form = modalForm.serializeArray();
+                $.ajax({
+                        url: '/TimeTracker/Save',
+                        type: 'POST',
+                        data: form
+                    })
+                    .done(function (data) {
+                        if (data === "") {
+                            element.children().eq(1).children().eq(0).html(form[1].value);
+                            spanError.html("");
+                            toggleModal.click();
+                        } else {
+                            spanError.html(data);
+                        }
+                    });
+            }
+        })
+    </script>
+    
+    
+
+}
