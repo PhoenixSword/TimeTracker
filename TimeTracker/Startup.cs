@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using TimeTracker.Data;
 using TimeTracker.Models;
 
 namespace TimeTracker
@@ -37,20 +36,20 @@ namespace TimeTracker
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection")));
 
 
             services.AddIdentity<User, IdentityRole>(opts =>
-                {
-                    opts.Password.RequiredLength = 4;
-                    opts.Password.RequireNonAlphanumeric = false;
-                    opts.Password.RequireLowercase = false;
-                    opts.Password.RequireUppercase = false;
-                    opts.Password.RequireDigit = false;
-                })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            {
+                opts.Password.RequiredLength = 4;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = false;
+                opts.Password.RequireUppercase = false;
+                opts.Password.RequireDigit = false;
+            });
+            //.AddEntityFrameworkStores<ApplicationDbContext>();
 
 
             services
@@ -73,21 +72,21 @@ namespace TimeTracker
                     // JWT tokens here
                 });
 
-            //services
-            //    .AddAuthorization(options =>
-            //    {
-            //        options.DefaultPolicy = new AuthorizationPolicyBuilder()
-            //            .RequireAuthenticatedUser()
-            //            .AddAuthenticationSchemes("Firebase", "Custom")
-            //            .Build();
+            services
+                .AddAuthorization(options =>
+                {
+                    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .AddAuthenticationSchemes("Firebase", "Custom")
+                        .Build();
 
-            //        options.AddPolicy("FirebaseAdministrators", new AuthorizationPolicyBuilder()
-            //            .RequireAuthenticatedUser()
-            //            .AddAuthenticationSchemes("Firebase")
-            //            .RequireClaim("role", "admin")
-            //            .Build());
-            //    });
-
+                    options.AddPolicy("FirebaseAdministrators", new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .AddAuthenticationSchemes("Firebase")
+                        .RequireClaim("role", "admin")
+                        .Build());
+                });
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -106,10 +105,13 @@ namespace TimeTracker
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
-
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            options.DefaultFileNames.Clear();
+            options.DefaultFileNames.Add("index.html");
+            app.UseDefaultFiles(options);
+            app.UseStaticFiles();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
