@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Google.Cloud.Firestore;
+using System;
 
 namespace TimeTracker
 {
@@ -14,6 +9,8 @@ namespace TimeTracker
     {
         public static void Main(string[] args)
         {
+            string credential_path = @"./timetracker-5c762-d0e501de9a71.json";
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credential_path);
             CreateWebHostBuilder(args).Build().Run();
         }
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace TimeTracker.Models
 {
     public class ErrorViewModel
