@@ -316,8 +316,15 @@ p, span, ul, li {
 
 .calendar__week .today {
   border: 1px solid #fd588a; }
-  .calendar__week .today .calendar__date {
-    color: #fd588a !important; }
+
+.calendar__week .today .calendar__date {
+  color: #fd588a !important; }
+
+.calendar__week .today.deep-orange .calendar__date {
+  color: #ffc0ff !important; }
+
+.calendar__week .today.deep-orange .calendar__task.calendar__task--today > span {
+  color: #ffc0ff !important; }
 
 .calendar__task {
   text-align: center;

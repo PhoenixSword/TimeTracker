@@ -422,30 +422,43 @@ p, span, ul, li {
 
     .today {
         border: 1px solid $pink;
+    }
+
+    .today {
         .calendar__date {
-            color: $pink!important;
+            color: $pink !important;
+        }
+    }
+
+    .today.deep-orange {
+        .calendar__date {
+            color: #ffc0ff !important;
+        }
+
+        .calendar__task.calendar__task--today > span {
+            color: #ffc0ff !important;
         }
     }
 }
 
-.calendar__task {
-    text-align: center;
-    color: $black;
-    font-size: 0.8rem;
+    .calendar__task {
+        text-align: center;
+        color: $black;
+        font-size: 0.8rem;
 
-    @media screen and (min-width:55em) {
-        font-size: 1rem;
+        @media screen and (min-width:55em) {
+            font-size: 1rem;
+        }
+
+        &.calendar__task--today > span {
+            color: $pink !important;
+        }
     }
 
-    &.calendar__task--today>span {
-        color: $pink!important;
+    body.modal-open {
+        padding: 1rem !important;
     }
-}
 
-body.modal-open {
-    padding: 1rem!important;
-}
-
-.stylish-color span{
-    color: white!important;
-}
+    .stylish-color span {
+        color: white !important;
+    }
