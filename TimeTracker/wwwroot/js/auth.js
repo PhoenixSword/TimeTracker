@@ -5,23 +5,10 @@ if (!firebase.apps.length) {
 }
 firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
-		token = user.ie;
-		singin = `<button class="btn my-0 py-0 mx-2 text-white">${user.email}</button>
+        token = user.ie;
+        singin = `<button class="btn my-0 py-0 mx-2 text-white">${user.displayName ? user.displayName : user.email}</button>
                         <button class="btn my-0 py-0 mx-2 text-white" style="height: 26px;" onclick=logOut()>Logout</button>`;
 		document.getElementById('name').innerHTML = singin;
-		$.ajax({
-			url: '/api',
-			beforeSend: function (xhr) {
-				xhr.setRequestHeader("Authorization", "Bearer " + user.ie);
-			},
-			success: function (data) {
-				$.each(data, function (index, value) {
-					var span = $(`span[id=${index}]`);
-					span.html(value);
-					span.parent().parent().addClass(checkColor(value));
-				});
-			}
-		});
 	} else {
 
 		window.location.replace("/login");

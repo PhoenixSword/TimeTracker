@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -21,9 +22,9 @@ namespace TimeTracker.Controllers
 
         [Authorize]
         [Route("/api")]
-        public async Task<Dictionary<int, int>> Get()
+        public async Task<Dictionary<int, int>> Get(DateTime date)
         {
-            return await _calendarRepo.Get(UserId);
+            return await _calendarRepo.Get(UserId, date);
         }
 
         [Authorize]
@@ -36,7 +37,7 @@ namespace TimeTracker.Controllers
                 _calendarRepo.Save(calendarViewModel, UserId);
                 return Ok();
             }
-            
+
             List<string> allErrors = ModelState.Values.SelectMany(v => v.Errors.Select(d => d.ErrorMessage)).Distinct().ToList();
             return Ok(allErrors);
         }

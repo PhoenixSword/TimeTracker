@@ -42,3 +42,4 @@ $('body').delegate('.modal-form button', 'click', function () {
 		});
 	}
 })
+

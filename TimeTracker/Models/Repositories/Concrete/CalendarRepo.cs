@@ -12,10 +12,10 @@ namespace TimeTracker.Models.Repositories.Concrete
     {
         FirestoreDb db = FirestoreDb.Create("timetracker-5c762");
 
-        public async Task<Dictionary<int, int>> Get(string userId)
+        public async Task<Dictionary<int, int>> Get(string userId, DateTime date)
         {
             DocumentReference usersRef = db.Collection("users").Document(userId);
-            CollectionReference colRef = usersRef.Collection("calendars").Document(DateTime.Now.ToString("MM.yyyy")).Collection("hours");
+            CollectionReference colRef = usersRef.Collection("calendars").Document(date.ToString("MM.yyyy")).Collection("hours");
             QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
             Dictionary<int, int> dictionary = new Dictionary<int, int>();
 

@@ -321,10 +321,10 @@ p, span, ul, li {
   color: #fd588a !important; }
 
 .calendar__week .today.deep-orange .calendar__date {
-  color: #ffc0ff !important; }
+  color: #a800a8 !important; }
 
 .calendar__week .today.deep-orange .calendar__task.calendar__task--today > span {
-  color: #ffc0ff !important; }
+  color: #a800a8 !important; }
 
 .calendar__task {
   text-align: center;

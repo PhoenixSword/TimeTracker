@@ -45,21 +45,21 @@ function login(type) {
 
 
 
-var singin = "";
-firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-        singin = `<button class="btn my-0 py-0 mx-2 text-white">${user.email}</button>
-                        <button class="btn my-0 py-0 mx-2 text-white" style="height: 26px;" onclick=logOut()>Logout</button>`;
-        $('#name').html(singin);
+//var singin = "";
+//firebase.auth().onAuthStateChanged(function (user) {
+//    if (user) {
+//        singin = `<button class="btn my-0 py-0 mx-2 text-white">${user.email}</button>
+//                        <button class="btn my-0 py-0 mx-2 text-white" style="height: 26px;" onclick=logOut()>Logout</button>`;
+//        $('#name').html(singin);
 
-    } else {
-        singin = `<span class="nav-item">
-                                <a class="nav-link text-white" href="/login">Login</a>
-                            </span>
-                            <span class="nav-item">
-                                <a class="nav-link text-white" href="/register">Register</a>
-                            </span>`;
-        $('#name').html(singin);
-    }
-});
+//    } else {
+//        singin = `<span class="nav-item">
+//                                <a class="nav-link text-white" href="/login">Login</a>
+//                            </span>
+//                            <span class="nav-item">
+//                                <a class="nav-link text-white" href="/register">Register</a>
+//                            </span>`;
+//        $('#name').html(singin);
+//    }
+//});
 
