@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TimeTracker.ViewModels
 {
@@ -17,12 +14,12 @@ namespace TimeTracker.ViewModels
     }
     public class CustomDateAttribute : RangeAttribute
     {
-        static public DateTime firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-        static public DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+        static public DateTime FirstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        static public DateTime LastDayOfMonth = FirstDayOfMonth.AddMonths(1).AddDays(-1);
 
-        public CustomDateAttribute() : base(typeof(DateTime), firstDayOfMonth.ToString("d"), lastDayOfMonth.ToString("d"))
+        public CustomDateAttribute() : base(typeof(DateTime), FirstDayOfMonth.ToString("d"), LastDayOfMonth.ToString("d"))
         {
-            ErrorMessage = "The field \"Data\" must be between " + firstDayOfMonth.ToString("d") + " and " + lastDayOfMonth.ToString("d");
+            ErrorMessage = "The field \"Data\" must be between " + FirstDayOfMonth.ToString("d") + " and " + LastDayOfMonth.ToString("d");
         }
 
     }

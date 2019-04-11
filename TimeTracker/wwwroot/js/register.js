@@ -5,8 +5,7 @@ if (!firebase.apps.length) {
 function regWithPassword() {
     var form = $('form.register').serializeArray();
     if (form[1].value === form[2].value) {
-	    firebase.auth().createUserWithEmailAndPassword(form[0].value, form[1].value).then(function(result) {
-
+	    firebase.auth().createUserWithEmailAndPassword(form[0].value, form[1].value).then(function() {
 		    window.location.replace("/");
 	    }).catch(function(error) {
 		    var errorMessage = error.message;
@@ -14,7 +13,7 @@ function regWithPassword() {
 		    $('.alert.alert-danger').removeAttr("hidden");
 	    });
     } else {
-        $('.alert.alert-danger').html("Passwords not match");
+        $('.alert.alert-danger').html("Passwords do not match");
         $('.alert.alert-danger').removeAttr("hidden");
     }
 }

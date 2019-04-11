@@ -14,23 +14,22 @@ function loginEmail() {
         $('.alert.alert-danger').html(errorMessage);
         $('.alert.alert-danger').removeAttr("hidden");
     });
-
-   
 }
 function login(type) {
+	console.log(type);
 	var provider = ""
     switch (type) {
-    case "Google":
+    case 1:
 		provider = new firebase.auth.GoogleAuthProvider();
 		break;
-    case "Facebook":
+    case 2:
 	    provider = new firebase.auth.FacebookAuthProvider();
 	    break;
-    case "Microsoft":
-        provider = new firebase.auth.OAuthProvider('microsoft.com');
-	    break;
-    case "Github":
+    case 3:
 	    provider = new firebase.auth.GithubAuthProvider();
+	    break;
+    case 4:
+        provider = new firebase.auth.OAuthProvider('microsoft.com');
 	    break;
     }
     firebase.auth().signInWithPopup(provider).then(function (result) {
