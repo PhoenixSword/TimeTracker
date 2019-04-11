@@ -32,12 +32,6 @@ namespace TimeTracker
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
-
-
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequiredLength = 4;
@@ -46,7 +40,6 @@ namespace TimeTracker
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
             });
-            //.AddEntityFrameworkStores<ApplicationDbContext>();
 
 
             services

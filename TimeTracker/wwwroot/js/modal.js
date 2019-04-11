@@ -24,13 +24,18 @@ $('body').delegate('.modal-form button', 'click', function () {
 				xhr.setRequestHeader("Authorization", "Bearer " + token);
 			},
 			success: function (data) {
-				if (data === "") {
+				if (!data) {
 					element.children().eq(1).children().eq(0).html(form[1].value);
 					spanError.html("");
 					toggleModal.click();
-					console.log(element.removeClass("green deep-orange stylish-color grey").addClass(checkColor(form[1].value)));
-				} else {
-					spanError.html(data);
+					element.removeClass("green deep-orange stylish-color grey").addClass(checkColor(form[1].value));
+                } else {
+                    if (data.length > 1) {
+	                    spanError.html(data[0] + "<br/>" + data[1]);
+                    } else {
+	                    spanError.html(data);
+                    }
+					
 				}
 			}
 		});

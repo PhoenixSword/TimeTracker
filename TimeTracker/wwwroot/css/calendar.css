@@ -293,7 +293,7 @@ p, span, ul, li {
 
 .calendar__day {
   align-content: center;
-  border: 1px dashed gray;
+  border: 1px solid gray;
   display: flex;
   flex-flow: column;
   justify-content: center;

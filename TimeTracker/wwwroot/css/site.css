@@ -57,3 +57,6 @@ body {
 .btn:hover {
   color: white;
   text-decoration: none; }
+
+form.login button {
+  width: 160px !important; }

@@ -4,7 +4,6 @@ if (!firebase.apps.length) {
 }
 function regWithPassword() {
     var form = $('form.register').serializeArray();
-    console.log(form);
     if (form[1].value === form[2].value) {
 	    firebase.auth().createUserWithEmailAndPassword(form[0].value, form[1].value).then(function(result) {
 

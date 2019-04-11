@@ -25,7 +25,7 @@ namespace TimeTracker.Controllers
 {
     public class HomeController : Controller
     {
-        private ICalendarRepo _calendarRepo;
+        private readonly ICalendarRepo _calendarRepo;
         private string UserId => User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
         public HomeController(ICalendarRepo calendarRepo)
@@ -43,19 +43,16 @@ namespace TimeTracker.Controllers
         [Authorize]
         [Route("/api")]
         [HttpPost]
-        public string Save([FromBody]CalendarViewModel calendarViewModel)
+        public IActionResult Save([FromBody]CalendarViewModel calendarViewModel)
         {
-            if ((calendarViewModel.Hours > 24) || (calendarViewModel.Hours < 0))
+            if (ModelState.IsValid)
             {
-                return "Invalid \"Hours\" value";
+                _calendarRepo.Save(calendarViewModel, UserId);
+                return Ok();
             }
-
-            if ((calendarViewModel.Date.Month != DateTime.Now.Month) || (calendarViewModel.Date.Year != DateTime.Now.Year))
-            {
-                return "Invalid \"Date\" value";
-            }
-
-            return _calendarRepo.Save(calendarViewModel, UserId);
+            
+            List<string> allErrors = ModelState.Values.SelectMany(v => v.Errors.Select(d => d.ErrorMessage)).Distinct().ToList();
+            return Ok(allErrors);
         }
 
         public IActionResult Index()

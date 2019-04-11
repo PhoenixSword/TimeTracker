@@ -2,6 +2,7 @@
     ViewData["Title"] = "Calendar";
 }
 <main role="main" class="pb-3">
+    <button class="btn btn-default show-calendar" hidden>Show calendar</button>
     <main class="calendar-contain">
         <section class="title-bar">
             <button class="title-bar__burger">
@@ -11,7 +12,7 @@
             <div class="title-bar__controls">
                 <div class="title-bar__minimize"></div>
                 <div class="title-bar__maximize"></div>
-                <div class="title-bar__close"></div>    
+                <div class="title-bar__close"></div>
             </div>
         </section>
 
@@ -34,13 +35,13 @@
 
         <section class="calendar__days">
             <section class="calendar__top-bar">
-                <span class="top-bar__days">Mon</span>
-                <span class="top-bar__days">Tue</span>
-                <span class="top-bar__days">Wed</span>
-                <span class="top-bar__days">Thu</span>
-                <span class="top-bar__days">Fri</span>
-                <span class="top-bar__days">Sat</span>
-                <span class="top-bar__days">Sun</span>
+                <span class="top-bar__days">Monday</span>
+                <span class="top-bar__days">Tuesday</span>
+                <span class="top-bar__days">Wednesday</span>
+                <span class="top-bar__days">Thursday</span>
+                <span class="top-bar__days">Friday</span>
+                <span class="top-bar__days">Saturday</span>
+                <span class="top-bar__days">Sunday</span>
             </section>
         </section>
     </main>
@@ -83,6 +84,16 @@
 
 @section Scripts
 {
+    <script>
+    $('.title-bar__controls').click(function() {
+        $('.calendar-contain').hide(100);
+        $('.show-calendar').removeAttr("hidden");
+    })
+    $('.show-calendar').click(function() {
+        $('.calendar-contain').show(100);
+        $('.show-calendar').attr("hidden", "hidden");
+    })
+    </script>
     <script src="/js/config.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/modal.js"></script>
