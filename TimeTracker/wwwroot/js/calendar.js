@@ -91,4 +91,7 @@ calendar += '</section>';
 $('.calendar__days').append(calendar);
 $('.sidebar__heading').html(`${dayOfWeekName}<br>${month} ${today}`);
 $('.title-bar__year').html(`Calendar > ${month} ${year}`);
+var _date = new Date();
+inputDate.attr("min", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-01`);
+inputDate.attr("max", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-${days}`);
    

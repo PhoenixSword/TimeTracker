@@ -24,11 +24,12 @@ $('body').delegate('.modal-form button', 'click', function () {
 				xhr.setRequestHeader("Authorization", "Bearer " + token);
 			},
 			success: function (data) {
-				if (!data) {
-					element.children().eq(1).children().eq(0).html(form[1].value);
+                if (!data) {
+                    var tempDate = new Date(form[0].value).getDate();
+                    $(`span [id=${tempDate}]`).html(form[1].value);
 					spanError.html("");
 					toggleModal.click();
-					element.removeClass("green deep-orange stylish-color grey").addClass(checkColor(form[1].value));
+					$(`span [id=${tempDate}]`).parent().parent().removeClass("green deep-orange stylish-color grey").addClass(checkColor(form[1].value));
                 } else {
                     if (data.length > 1) {
 	                    spanError.html(data[0] + "<br/>" + data[1]);
