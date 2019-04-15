@@ -293,6 +293,12 @@ p, span, ul, li {
     opacity: 0.8;
 }
 
+.sidebar__headinglist {
+    max-height: 600px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
+
 .sidebar__list {
     list-style: none;
     margin: 0;
@@ -301,15 +307,23 @@ p, span, ul, li {
 }
 
 .sidebar__list-item {
+    span.taskName {
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        font-size: 19px;
+        max-width: 150px;
+        }
+
     margin: 1.2rem 0;
     color: lighten($black, 20%);
     font-weight: 100;
-    font-size: 1rem;
+    font-size: 19px;
 }
 
 .list-item__time {
+    font-size: 19px;
     display: inline-block;
-    width: 60px;
+    min-width: 100px;
 
     @media screen and (min-width:55em) {
         margin-right: 2rem;
@@ -462,3 +476,11 @@ p, span, ul, li {
     .stylish-color span {
         color: white !important;
     }
+
+div#current.calendar__day.active {
+    background: blue !important;
+    border: 1px solid blue !important;
+    span{
+        color: white!important;
+    }
+}

@@ -1,4 +1,15 @@
 ﻿
+var inputDate = $('.modal-body').children().children().eq(0);
+var inputName = $('.modal-body').children().children().eq(2);
+var inputHours = $('.modal-body').children().children().eq(4);
+var inputDescription = $('.modal-body').children().children().eq(6);
+var inputImage = $('.modal-body').children().children().eq(8);
+const monthNames = [
+	"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
+	"December"
+];
+const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
 function checkColor(hours) {
     if ((hours > 0) && (hours <= 4)) {
         return "green";
@@ -14,6 +25,19 @@ function checkColor(hours) {
 var date = new Date();
 getCalendar();
 
+function getImage() {
+    var storageRef = firebase.storage().ref();
+    var spaceRef = storageRef.child('images/photo_1.png');
+    var path = spaceRef.fullPath;
+    var gsReference = storage.refFromURL('gs://timetracker-5c762.appspot.com')
+
+    storageRef.child('images/photo_1.png').getDownloadURL().then(function (url) {
+        var test = url;
+    }).catch(function (error) {
+
+    });
+}
+
 function getCalendar(type) {
     if (type === 1) {
 	    date.setMonth(date.getMonth() - 1);
@@ -24,11 +48,7 @@ function getCalendar(type) {
 
     if (date.getMonth() + 1 === new Date().getMonth() + 1) var today = date.getDate(); else var today = "";
 	var calendar = "";
-	const monthNames = [
-		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
-		"December"
-	];
-	const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+	
 
 	var month = monthNames[date.getMonth()];
 	var year = date.getFullYear();
@@ -48,15 +68,14 @@ function getCalendar(type) {
 				`<div class="calendar__day active today ${checkColor(hours)}">
 	                        <span class="calendar__date">${k}</span>
 	                            <span class="calendar__task calendar__task--today">
-	                                <span id="${k}">0</span>  <span>hours</span>
+	                                <span id="${k}">0</span> <span>hours</span>
 	                            </span>
 	                        </div>`;
 		} else {
 			calendar +=
 				`<div class="calendar__day active ${checkColor(hours)}">
 	                        <span class="calendar__date">${k}</span>
-	                        <span class="calendar__task"><span id="${k}">0</span>
-	                            <span>hours</span></span>
+	                        <span class="calendar__task"><span id="${k}">0</span> <span>hours</span></span>
 	                    </div>`;
 		}
 	}
@@ -97,9 +116,10 @@ function getCalendar(type) {
     $('.days-week').html(calendar);
     $('.sidebar__heading').html(`${weekdays[new Date().getDay()]}<br>${monthNames[new Date().getMonth()]} ${new Date().getDate()}`);
 	$('.title-bar__year').html(`Calendar > ${month} ${year}`);
-	var _date = new Date();
-	inputDate.attr("min", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-01`);
-    inputDate.attr("max", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-${days}`);
+    var _date = new Date();
+
+    inputDate.attr("min", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-01`);
+    inputDate.attr("max", `${year}-${('0' + (_date.getMonth() + 1)).slice(-2)}-${new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()}`);
 
     firebase.auth().onAuthStateChanged(function (user) {
 	    if (user) {
@@ -111,11 +131,15 @@ function getCalendar(type) {
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("Authorization", "Bearer " + token);
 			    },
-			    success: function (data) {
+                success: function (data) {
 				    $.each(data, function (index, value) {
-					    var span = $(`span[id=${index}]`);
-					    span.html(value);
-					    span.parent().parent().addClass(checkColor(value));
+                        var span = $(`span[id=${index}]`);
+                        var sum = 0;
+                        $.each(value, function(index, value) {
+                            sum += value.hours;
+                        });
+					    span.html(sum);
+                        span.parent().parent().addClass(checkColor(sum));
 				    });
 			    }
 		    });

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TimeTracker.ViewModels;
 using TimeTracker.Models.Repositories.Abstract;
@@ -22,15 +23,23 @@ namespace TimeTracker.Controllers
 
         [Authorize]
         [Route("/api")]
-        public async Task<Dictionary<int, int>> Get(DateTime date)
+        public async Task<Dictionary<int, object>> GetAll(DateTime date)
         {
-            return await _calendarRepo.Get(UserId, date);
+            return await _calendarRepo.GetAll(UserId, date);
         }
+
+        [Authorize]
+        [Route("/api/getTasks")]
+        public async Task<IEnumerable<TaskViewModel>> GetTasks(DateTime date)
+        {
+            return await _calendarRepo.GetTasks(UserId, date);
+        }
+
 
         [Authorize]
         [Route("/api")]
         [HttpPost]
-        public IActionResult Save([FromBody]CalendarViewModel calendarViewModel)
+        public IActionResult Save(CalendarViewModel calendarViewModel)
         {
             if (ModelState.IsValid)
             {
