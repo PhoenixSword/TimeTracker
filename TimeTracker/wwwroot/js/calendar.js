@@ -1,9 +1,9 @@
 ﻿
-var inputDate = $('.modal-body').children().children().eq(0);
-var inputName = $('.modal-body').children().children().eq(2);
-var inputHours = $('.modal-body').children().children().eq(4);
-var inputDescription = $('.modal-body').children().children().eq(6);
-var inputImage = $('.modal-body').children().children().eq(8);
+var inputImage = $('.modal-body').children().children().eq(0);
+var inputDate = $('.modal-body').children().children().eq(1);
+var inputName = $('.modal-body').children().children().eq(3);
+var inputHours = $('.modal-body').children().children().eq(5);
+var inputDescription = $('.modal-body').children().children().eq(7);
 const monthNames = [
 	"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
 	"December"
@@ -138,7 +138,7 @@ function getCalendar(type) {
                         $.each(value, function(index, value) {
                             sum += value.hours;
                         });
-					    span.html(sum);
+                        span.html(sum);
                         span.parent().parent().addClass(checkColor(sum));
 				    });
 			    }

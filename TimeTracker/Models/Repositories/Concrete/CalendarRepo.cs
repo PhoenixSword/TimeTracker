@@ -7,9 +7,6 @@ using System.IO;
 using System.Threading.Tasks;
 using Firebase.Storage;
 using Google.Cloud.Firestore;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Threading;
 
 namespace TimeTracker.Models.Repositories.Concrete
 {
@@ -50,23 +47,23 @@ namespace TimeTracker.Models.Repositories.Concrete
                 .Document(date.ToString("dd")).Collection("tasks");
             QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
             List<TaskViewModel> list = new List<TaskViewModel>();
-            string Url = "";
             foreach (var temp in querySnapshot)
             {
+                string url;
                 if (temp.ToDictionary().ContainsKey("downloadUrl"))
                 {
-                    Url = temp.ToDictionary()["downloadUrl"].ToString();
+                    url = temp.ToDictionary()["downloadUrl"].ToString();
                 }
                 else
                 {
-                    Url = "";
+                    url = "";
                 }
 
                 list.Add(new TaskViewModel
                 {
                     Name = temp.Id, Hours = int.Parse(temp.ToDictionary()["hours"].ToString()),
                     Description = temp.ToDictionary()["description"].ToString(),
-                    downloadUrl = Url
+                    DownloadUrl = url
                 });
             }
 
@@ -76,7 +73,8 @@ namespace TimeTracker.Models.Repositories.Concrete
         public async Task Save(CalendarViewModel calendarViewModel, string userId)
         {
             var filePath = Path.GetTempFileName();
-            var downloadUrl = "";
+            // ReSharper disable once RedundantAssignment
+            string downloadUrl = "";
             var file = calendarViewModel.Image;
             if (file != null)
             {
@@ -92,9 +90,10 @@ namespace TimeTracker.Models.Repositories.Concrete
                 str.Dispose();
                 File.Delete(filePath);
             }
-
-            
-
+            else if (calendarViewModel.DownloadUrl != null)
+            {
+                downloadUrl = calendarViewModel.DownloadUrl;
+            }
             DocumentReference dateRef = db.Collection("users").Document(userId)
                 .Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
                     .ToString("MM.yyyy")).Document(calendarViewModel.Date.ToString("dd"));
@@ -103,7 +102,7 @@ namespace TimeTracker.Models.Repositories.Concrete
                 month = calendarViewModel.Date.ToString("MM.yyyy")
             });
             DocumentReference taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Name);
-            taskRef?.SetAsync(new {description = calendarViewModel.Description, hours = calendarViewModel.Hours, downloadUrl = downloadUrl },
+            taskRef?.SetAsync(new {description = calendarViewModel.Description, hours = calendarViewModel.Hours, downloadUrl },
                 SetOptions.MergeAll);
         }
 

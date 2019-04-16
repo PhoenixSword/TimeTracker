@@ -306,21 +306,40 @@ p, span, ul, li {
     padding-right: 1rem;
 }
 
+a .sidebar__list-item {
+    padding: 4px 8px 4px 8px;
+    border: 2px solid lightgrey;
+    border-radius: 10px 5px;
+    cursor: pointer;
+}
+a > .sidebar__list-item:hover {
+    border: 2px solid lightblue;
+    border-radius: 10px 5px;
+}
+
+
 .sidebar__list-item {
+    cursor: pointer;
+    border: 1px solid gray;
+
     span.taskName {
         word-wrap: break-word;
         text-overflow: ellipsis;
         font-size: 19px;
-        max-width: 150px;
-        }
+        max-width: 125px;
+    }
 
-    margin: 1.2rem 0;
+    margin: 1rem 0;
     color: lighten($black, 20%);
     font-weight: 100;
     font-size: 19px;
 }
 
 .list-item__time {
+    span {
+        font-size: 19px;
+    }
+
     font-size: 19px;
     display: inline-block;
     min-width: 100px;

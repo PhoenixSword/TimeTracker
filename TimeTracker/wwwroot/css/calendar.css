@@ -227,8 +227,20 @@ p, span, ul, li {
   padding-left: 1rem;
   padding-right: 1rem; }
 
+a .sidebar__list-item {
+  padding: 4px 8px 4px 8px;
+  border: 2px solid lightgrey;
+  border-radius: 10px 5px;
+  cursor: pointer; }
+
+a > .sidebar__list-item:hover {
+  border: 2px solid lightblue;
+  border-radius: 10px 5px; }
+
 .sidebar__list-item {
-  margin: 1.2rem 0;
+  cursor: pointer;
+  border: 1px solid gray;
+  margin: 1rem 0;
   color: #2d4338;
   font-weight: 100;
   font-size: 19px; }
@@ -236,12 +248,14 @@ p, span, ul, li {
     word-wrap: break-word;
     text-overflow: ellipsis;
     font-size: 19px;
-    max-width: 150px; }
+    max-width: 125px; }
 
 .list-item__time {
   font-size: 19px;
   display: inline-block;
   min-width: 100px; }
+  .list-item__time span {
+    font-size: 19px; }
   @media screen and (min-width: 55em) {
     .list-item__time {
       margin-right: 2rem; } }

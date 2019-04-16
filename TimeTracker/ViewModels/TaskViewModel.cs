@@ -16,6 +16,6 @@ namespace TimeTracker.ViewModels
         public string Description { get; set; }
 
         public IFormFile Image { get; set; }
-        public string downloadUrl { get; set; }
+        public string DownloadUrl { get; set; }
     }
 }
