@@ -6,7 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using Firebase.Storage;
-using Google.Cloud.Firestore;
+    using Google.Cloud.Firestore;
+    using Google.Type;
 
 namespace TimeTracker.Models.Repositories.Concrete
 {
@@ -14,28 +15,37 @@ namespace TimeTracker.Models.Repositories.Concrete
     {
         FirestoreDb db = FirestoreDb.Create("timetracker-5c762");
 
-        public async Task<Dictionary<int, object>> GetAll(string userId, DateTime date)
+        public async Task<Dictionary<string, int>> GetAll(string userId, DateTime date)
         {
             DocumentReference usersRef = db.Collection("users").Document(userId);
             CollectionReference colRef = usersRef.Collection(date.ToString("MM.yyyy"));
             QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
-            Dictionary<int, object> dictionary = new Dictionary<int, object>();
-            Dictionary<string, object> dictionaryObj;
+            Dictionary<string, int> dictionary = new Dictionary<string, int>();
             foreach (var temp in querySnapshot)
             {
-                dictionaryObj = new Dictionary<string, object>();
+                var day = temp.Id;
                 var tasks = await temp.Reference.Collection("tasks").GetSnapshotAsync();
+                int hours = 0;
                 foreach (var temp2 in tasks)
                 {
-                    dictionaryObj.Add(temp2.Id,
-                        new
-                        {
-                            hours = int.Parse(temp2.ToDictionary()["hours"].ToString()),
-                            description = temp2.ToDictionary()["description"].ToString()
-                        });
+                    hours += int.Parse(temp2.ToDictionary()["hours"].ToString());
                 }
 
-                dictionary.Add(int.Parse(temp.Id), dictionaryObj);
+                dictionary.Add(day, hours);
+            }
+
+            return dictionary;
+        }
+
+        public async Task<Dictionary<string, string>> GetAllTasks(string userId, DateTime date)
+        {
+            CollectionReference colRef = db.Collection("users").Document(userId).Collection(date.ToString("MM.yyyy"))
+                .Document("tasks").Collection("tasks");
+            QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            foreach (var temp in querySnapshot)
+            {
+                dictionary.Add(temp.Id, temp.ToDictionary()["title"].ToString());
             }
 
             return dictionary;
@@ -47,27 +57,74 @@ namespace TimeTracker.Models.Repositories.Concrete
                 .Document(date.ToString("dd")).Collection("tasks");
             QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
             List<TaskViewModel> list = new List<TaskViewModel>();
+
             foreach (var temp in querySnapshot)
             {
-                string url;
-                if (temp.ToDictionary().ContainsKey("downloadUrl"))
-                {
-                    url = temp.ToDictionary()["downloadUrl"].ToString();
-                }
-                else
-                {
-                    url = "";
-                }
+                DocumentReference qwe = (DocumentReference)temp.ToDictionary()["reference"];
+                DocumentSnapshot qSnapshot = await qwe.GetSnapshotAsync();
+                var dictionary = qSnapshot.ToDictionary();
+                list.Add(new TaskViewModel{
+                    Id = temp.Id,
+                    Name = dictionary["title"].ToString(),
+                    Description = dictionary["description"].ToString(), 
+                    Hours = int.Parse(temp.ToDictionary()["hours"].ToString()),
+                    DownloadUrl = dictionary["downloadUrl"].ToString() });
+              
+            }
+            return list;
+        }
 
-                list.Add(new TaskViewModel
+        public async Task<Dictionary<string, List<object>>> GetInfo(string userId, DateTime date)
+        {
+            CollectionReference colRef = db.Collection("users").Document(userId).Collection(date.ToString("MM.yyyy"));
+            QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
+            Dictionary<string, List<TaskViewModel>> list = new Dictionary<string, List<TaskViewModel>>();
+
+            foreach (var temp in querySnapshot)
+            {
+                var tasksRef = colRef.Document(temp.Id).Collection("tasks");
+                var tasksSnapshot = await tasksRef.GetSnapshotAsync();
+                var tempList = new List<TaskViewModel>();
+                foreach (var temp2 in tasksSnapshot)
                 {
-                    Name = temp.Id, Hours = int.Parse(temp.ToDictionary()["hours"].ToString()),
-                    Description = temp.ToDictionary()["description"].ToString(),
-                    DownloadUrl = url
-                });
+                    DocumentReference taskReference = (DocumentReference)temp2.ToDictionary()["reference"];
+                    DocumentSnapshot qSnapshot = await taskReference.GetSnapshotAsync();
+                    var dictionary = qSnapshot.ToDictionary();
+                    tempList.Add(new TaskViewModel
+                    {
+                        Id = temp2.Id,
+                        Name = dictionary["title"].ToString(),
+                        Description = dictionary["description"].ToString(),
+                        Hours = int.Parse(temp2.ToDictionary()["hours"].ToString()),
+                    });
+                   
+                }
+                list.Add(temp.Id, tempList);
+
             }
 
-            return list;
+
+            Dictionary<string, List<object>> list2 = new Dictionary<string, List<object>>();
+            foreach (var task in list)
+            {
+                foreach (var task2 in task.Value)
+                {
+                    if (list2.ContainsKey(task2.Name))
+                    {
+                        list2[task2.Name].Add(new { date = task.Key, hours = task2.Hours });
+                    }
+                    else
+                    {
+                        var tempList = new List<object>
+                        {
+                            new { date = task.Key, hours = task2.Hours }
+                        };
+                        list2.Add(task2.Name, tempList);
+                    }
+                    
+                }
+            }
+            return list2;
         }
 
         public async Task Save(CalendarViewModel calendarViewModel, string userId)
@@ -94,6 +151,22 @@ namespace TimeTracker.Models.Repositories.Concrete
             {
                 downloadUrl = calendarViewModel.DownloadUrl;
             }
+
+            DocumentReference tasksRef;
+
+            if (calendarViewModel.Id != null)
+            {
+                tasksRef = db.Collection("users").Document(userId).Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
+                    .ToString("MM.yyyy")).Document("tasks").Collection("tasks").Document(calendarViewModel.Id);
+            }
+            else
+            {
+                tasksRef = db.Collection("users").Document(userId).Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
+                    .ToString("MM.yyyy")).Document("tasks").Collection("tasks").Document();
+            }
+
+            tasksRef?.SetAsync(new { title = calendarViewModel.Name, description = calendarViewModel.Description, downloadUrl }, SetOptions.MergeAll);
+
             DocumentReference dateRef = db.Collection("users").Document(userId)
                 .Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
                     .ToString("MM.yyyy")).Document(calendarViewModel.Date.ToString("dd"));
@@ -101,9 +174,16 @@ namespace TimeTracker.Models.Repositories.Concrete
             {
                 month = calendarViewModel.Date.ToString("MM.yyyy")
             });
-            DocumentReference taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Name);
-            taskRef?.SetAsync(new {description = calendarViewModel.Description, hours = calendarViewModel.Hours, downloadUrl },
-                SetOptions.MergeAll);
+            DocumentReference taskRef;
+            if (calendarViewModel.Id != null)
+            {
+                taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Id);
+            }
+            else
+            {
+                taskRef = dateRef.Collection("tasks").Document(tasksRef?.Id);
+            }
+            taskRef?.SetAsync(new { reference = tasksRef, hours = calendarViewModel.Hours }, SetOptions.MergeAll);
         }
 
     }

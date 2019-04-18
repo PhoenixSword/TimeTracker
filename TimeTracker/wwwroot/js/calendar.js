@@ -1,15 +1,4 @@
 ﻿
-var inputImage = $('.modal-body').children().children().eq(0);
-var inputDate = $('.modal-body').children().children().eq(1);
-var inputName = $('.modal-body').children().children().eq(3);
-var inputHours = $('.modal-body').children().children().eq(5);
-var inputDescription = $('.modal-body').children().children().eq(7);
-const monthNames = [
-	"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
-	"December"
-];
-const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-
 function checkColor(hours) {
     if ((hours > 0) && (hours <= 4)) {
         return "green";
@@ -22,27 +11,15 @@ function checkColor(hours) {
     return "";
 }
 
-var date = new Date();
+
 getCalendar();
-
-function getImage() {
-    var storageRef = firebase.storage().ref();
-    var spaceRef = storageRef.child('images/photo_1.png');
-    var path = spaceRef.fullPath;
-    var gsReference = storage.refFromURL('gs://timetracker-5c762.appspot.com')
-
-    storageRef.child('images/photo_1.png').getDownloadURL().then(function (url) {
-        var test = url;
-    }).catch(function (error) {
-
-    });
-}
-
 function getCalendar(type) {
     if (type === 1) {
+        $(`.sidebar__list`).html(``);
 	    date.setMonth(date.getMonth() - 1);
     }
-    else if (type === 2){
+    else if (type === 2) {
+        $(`.sidebar__list`).html(``);
         date.setMonth(date.getMonth() + 1);
     }
 
@@ -132,14 +109,16 @@ function getCalendar(type) {
                     xhr.setRequestHeader("Authorization", "Bearer " + token);
 			    },
                 success: function (data) {
-				    $.each(data, function (index, value) {
-                        var span = $(`span[id=${index}]`);
-                        var sum = 0;
-                        $.each(value, function(index, value) {
-                            sum += value.hours;
-                        });
-                        span.html(sum);
-                        span.parent().parent().addClass(checkColor(sum));
+                    if (date.getMonth() === new Date().getMonth()) {
+		                current = $(`span#${new Date().getDate()}`).parent().parent();
+		                current.attr("id", "current");
+		                getTasks(current);
+	                }
+	                
+                    $.each(data, function (index, value) {
+                        var span = $(`span[id=${index.substr(0, 1) == 0 ? index.slice(1) : index}]`);
+                        span.html(value);
+                        span.parent().parent().addClass(checkColor(value));
 				    });
 			    }
 		    });

@@ -1,4 +1,4 @@
-﻿var token = "";
+﻿
 var date = new Date();
 if (!firebase.apps.length) {
 	firebase.initializeApp(config);

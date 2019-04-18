@@ -22,7 +22,7 @@ namespace TimeTracker.Controllers
 
         [Authorize]
         [Route("/api")]
-        public async Task<Dictionary<int, object>> GetAll(DateTime date)
+        public async Task<Dictionary<string, int>> GetAll(DateTime date)
         {
             return await _calendarRepo.GetAll(UserId, date);
         }
@@ -34,6 +34,19 @@ namespace TimeTracker.Controllers
             return await _calendarRepo.GetTasks(UserId, date);
         }
 
+        [Authorize]
+        [Route("/api/getAllTasks")]
+        public async Task<Dictionary<string, string>> GetAllTasks(DateTime date)
+        {
+            return await _calendarRepo.GetAllTasks(UserId, date);
+        }
+        
+        [Authorize]
+        [Route("/api/getInfo")]
+        public async Task<Dictionary<string, List<object>>> GetInfo(DateTime date)
+        {
+            return await _calendarRepo.GetInfo(UserId, date);
+        }
 
         [Authorize]
         [Route("/api")]

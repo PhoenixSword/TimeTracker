@@ -1,52 +1,67 @@
 ﻿@{
     ViewData["Title"] = "Calendar";
 }
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <main role="main" class="pb-3">
     <button class="btn btn-default show-calendar" hidden>Show calendar</button>
-    <main class="calendar-contain">
-        <section class="title-bar">
-            <button class="title-bar__burger">
-                <span class="burger__lines">Toggle Menu</span>
-            </button>
-            <span class="title-bar__year"></span>
-            <div class="title-bar__controls">
-                <div class="title-bar__minimize"></div>
-                <div class="title-bar__maximize"></div>
-                <div class="title-bar__close"></div>
-            </div>
-        </section>
+    <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+        <div class="flipper">
+            <div class="front">
+                <main class="calendar-contain">
+                    <section class="title-bar">
+                        <button class="title-bar__burger">
+                            <span class="burger__lines">Toggle Menu</span>
+                        </button>
+                        <span class="title-bar__year"></span>
+                        <div class="title-bar__controls">
+                            <div class="title-bar__minimize"></div>
+                            <div class="title-bar__maximize"></div>
+                            <div class="title-bar__close"></div>
+                        </div>
+                    </section>
 
-        <aside class="calendar__sidebar">
-            <div class="sidebar__nav">
-                <!-- Icons by Icons8 -->
-                <span class="sidebar__nav-item"><img class="icon icons8-Plus-Math" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAWUlEQVRYR+2WMQoAIAgA9f+PrsWmEMQSEa7Z8rzEUmle2pxfABhvYFkPpQtJb7TEAGAAAxgoM3AO/v1YXoPPm4TtANHKy64AAAxgAANjDERB3bjXXzEA8w1s3k4WIU0YaEoAAAAASUVORK5CYII="></span>
-                <span class="sidebar__nav-item"><img class="icon icons8-Share" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB+klEQVRYR+2W0VEdMQxFDxUQKoBUkFABUAFQAaGDUEFCBQkVABUAFRAqgFRAUgFQQTJnxprx2/V67f3h5+nnzfNK8vXVteQN3tk23nl/1gCWMrAD/AD2UwlvgTPgtbekSwB8AJ4Bf3Nz84+9IJYAuAJOgAfgKGNgD7gGvvSwsATAH2Ab2MpOKxsvgN9kodl6AHha6279tRyAa5ZFE4R6UBez1gogaM8T/gKO08JNJsjw+ZmAVEG0AMg3Pwf8/wRsDjK/AZ+TBr6lbxfA1xqCOQDS7um0A8BTa1L+fSBC/0u/lsfJ0mQ55gCE4KyplPaYJ1czVWHWAHidLoG/mfB6AIQgvTGnqXSj+BoAaTusBTegCRbusnKthNUABP157Rv2XHGxVd/XylAD8C+lmtNJDVQ0KH2KeaaSDxuL104hhsrnmIhh5bWMxmWHHMWXABjwODFsdhtAdMWXANSGzaSYMkpCvE3DqgQgar902DiW7ZKl+JEWSgBKCUITttvhO2Coh1r8qKeUAASFpWHTMu+jhKX4UQmnRFgaNp7Ufu9Aqpk+MYxyP9mTyZVnW+0a2vu9RrZSBeWLJ9qr31wTqKaf3+18ce0iRtr1s7WP3ow9TcauJr0CqpkbullMzqpzD4BIZHLBeOpPafF3OqWbCrLZlgBoTt7iuAawZuA/xAh3Ifk/Dm0AAAAASUVORK5CYII="></span>
-                <span class="sidebar__nav-item" onclick="getCalendar(1)" accesskey="w"><img class="icon icons8-Up" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAxklEQVRYR+3VwQ2DMAyF4Z8NOkI36AodpZ2sjMAoHaWdoJWlIEXI4RHnwMWROAH2ZxuSiZPXdHJ+EjDagUcZ4Rwd5QjAkr9K4icQQkQBdfK1+BAiAvCShxG9gG3b6xGExtED8Gb+K6VbnNA3cRTQCl4DzNKNOALYC7oFdCMUQFXkAboQCvAGbkDrF2sBasQXuAIfb7NSgAtwB5bGTrcHWBFWhF3uUgC1wyqAen/4NExAdiA7kB3IDmQH5GGjHhg9DVV8eT8Bf2HqNiEP+isaAAAAAElFTkSuQmCC"></span>
-                <span class="sidebar__nav-item" onclick="getCalendar(2)" accesskey="s"><img class="icon icons8-Down" width="22px" height="22px" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA4UlEQVRYR+2WgQnCMBBFXzdwBSdwBUfRyXQER3EUN1AOEgnxLrkkhYCkUFpI7/+Xf1fajcnHNtmfBTCawDu0sFunuzAYL4CVwEpgJbAS+P8EDsAZeBj/DbUELsAznKpE7WMkxSfgCtwVhRKAmN+AF3AM1x+JGkAUkUINwgKo1X1BagDyYElMA3Cbi7gHoASRAzSZtwBYEClAs3krgAYhQxbnI73XBrbrLdCK0p3m69bbYv79e2cgF9Agms17WpCCdPU830lvAlFHIORw93xvALO33oXRBLw+uw/hsHEUmJ7ABzErNiGyzfJcAAAAAElFTkSuQmCC"></span>
-            </div>
-            <div class="sidebar__headinglist">
-                <h2 class="sidebar__heading"></h2>
-                <ul class="sidebar__list">
-           
-                </ul>
-                <button class="d-flex mx-auto btn btn-success button-edit">Add</button>
-            </div>
-        </aside>
+                    <aside class="calendar__sidebar">
+                        <div class="sidebar__nav">
+                            <!-- Icons by Icons8 -->
+                            <span class="sidebar__nav-item mx-auto"><i class="fas fa-plus fa-lg"></i></span>
+                            <span class="sidebar__nav-item mx-auto"><i class="fas fa-chart-line fa-lg"></i></span>
+                            <span class="sidebar__nav-item mx-auto" onclick="getCalendar(1)"><i class="fas fa-arrow-left fa-lg"></i></span>
+                            <span class="sidebar__nav-item mx-auto" onclick="getCalendar(2)"><i class="fas fa-arrow-right fa-lg"></i></span>
+                        </div>
+                        <div class="sidebar__headinglist">
+                            <h2 class="sidebar__heading"></h2>
+                            <ul class="sidebar__list"></ul>
+                        </div>
+                    </aside>
 
-        <section class="calendar__days">
-            <section class="calendar__top-bar">
-                <span class="top-bar__days">Monday</span>
-                <span class="top-bar__days">Tuesday</span>
-                <span class="top-bar__days">Wednesday</span>
-                <span class="top-bar__days">Thursday</span>
-                <span class="top-bar__days">Friday</span>
-                <span class="top-bar__days">Saturday</span>
-                <span class="top-bar__days">Sunday</span>
-            </section>
-            <section class="days-week"></section>
-        </section>
-    </main>
+                    <section class="calendar__days">
+                        <section class="calendar__top-bar">
+                            <span class="top-bar__days">Monday</span>
+                            <span class="top-bar__days">Tuesday</span>
+                            <span class="top-bar__days">Wednesday</span>
+                            <span class="top-bar__days">Thursday</span>
+                            <span class="top-bar__days">Friday</span>
+                            <span class="top-bar__days">Saturday</span>
+                            <span class="top-bar__days">Sunday</span>
+                        </section>
+                        <section class="days-week"></section>
+                    </section>
+                </main>
+            </div>
+            <div class="back">
+                <section class="title-bar">
+                    <button class="title-bar__burger">
+                        <span class="burger__lines">Toggle Menu</span>
+                    </button>
+                    <span class="title-bar__year">Calendar &gt; April 2019</span>
+                    <i class="far fa-calendar-alt fa-2x"></i>
+                </section>
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    
 </main>
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -62,7 +77,7 @@
                     <span aria-hidden="true" class="font-weight-bold">&times;</span>
                 </button>
             </div>
-                
+
             <form class="modal-form" onsubmit="return false;">
                 <div class="modal-body">
                     <div class="alert alert-danger" role="alert" hidden></div>
@@ -81,8 +96,15 @@
                         <label for="date" class="input-active">Date</label>
                     </div>
                     <div class="md-form">
-                        <input type="text" id="name" name="name" class="form-control" maxlength="30" required>
+                        @*<input type="text" id="name" name="name" class="form-control" maxlength="30"  list="datalist" required>
+
+                            <datalist id="datalist"></datalist>*@
+
+                        <input type="text" id="name" name="name" class="form-control" maxlength="30" list="datalist" required>
                         <label for="name" class="input-active">Name</label>
+
+                        <div id="test" class="mx-auto d-flex-column">
+                        </div>
                     </div>
                     <div class="md-form">
                         <input type="number" id="hours" name="hours" class="form-control" min="0" max="24" required>
@@ -92,6 +114,10 @@
                         <input type="text" id="descripton" name="descripton" class="form-control" maxlength="100" required>
                         <label for="descripton" class="input-active">Descripton</label>
                     </div>
+                    <div class="md-form">
+                        <input type="text" id="id" name="id" hidden>
+                    </div>
+
 
                 </div>
                 <div class="modal-footer">
@@ -116,6 +142,7 @@
             $('.show-calendar').attr("hidden", "hidden");
         });
     </script>
+    <script src="/js/variables.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/config.js"></script>
     <script src="/js/auth.js"></script>
@@ -123,4 +150,6 @@
     <script src="/js/modal.js"></script>
     <script src="/js/login.js"></script>
     <script src="/js/register.js"></script>
+    <script src="/js/chart.js"></script>
+
 }
