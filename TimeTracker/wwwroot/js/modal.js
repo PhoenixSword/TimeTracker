@@ -9,7 +9,6 @@ $('body').delegate('.sidebar__list-item', 'click', function () {
 });
 
 $('body').delegate('.fas.fa-plus', 'click', function () {
-	console.log(current);
     if (current !== "") {
 	    Edit();
 	}
@@ -237,6 +236,7 @@ $('body').delegate('.modal-form button', 'click', function() {
 			},
 			success: function(data) {
                 if (!data) {
+	                getInfo(token);
                     var tempDate = new Date(form[0].value).getDate();
                     prevHours === undefined ? prevHours = 0 : prevHours
                     $(`span [id=${tempDate}]`).html(+sum - +prevHours + +form[2].value);

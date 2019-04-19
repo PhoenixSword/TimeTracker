@@ -277,3 +277,16 @@ form.login button {
 
 .fa-arrow-right:hover {
   color: blue; }
+
+.far.fa-calendar-alt.fa-2x:hover {
+  color: grey;
+  cursor: pointer; }
+
+.back-hide {
+  visibility: hidden; }
+
+.gantt {
+  overflow-y: scroll; }
+
+#chart_div {
+  padding: 10px; }

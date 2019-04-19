@@ -25,6 +25,7 @@
                             <!-- Icons by Icons8 -->
                             <span class="sidebar__nav-item mx-auto"><i class="fas fa-plus fa-lg"></i></span>
                             <span class="sidebar__nav-item mx-auto"><i class="fas fa-chart-line fa-lg"></i></span>
+                            <span class="sidebar__nav-item mx-auto"><i class="fas fa-chart-bar fa-lg"></i></span>
                             <span class="sidebar__nav-item mx-auto" onclick="getCalendar(1)"><i class="fas fa-arrow-left fa-lg"></i></span>
                             <span class="sidebar__nav-item mx-auto" onclick="getCalendar(2)"><i class="fas fa-arrow-right fa-lg"></i></span>
                         </div>
@@ -48,7 +49,7 @@
                     </section>
                 </main>
             </div>
-            <div class="back">
+            <div class="back chart-line">
                 <section class="title-bar">
                     <button class="title-bar__burger">
                         <span class="burger__lines">Toggle Menu</span>
@@ -58,10 +59,22 @@
                 </section>
                 <canvas id="myChart"></canvas>
             </div>
+            
+            <div class="back-hide gantt">
+                <section class="title-bar">
+                    <button class="title-bar__burger">
+                        <span class="burger__lines">Toggle Menu</span>
+                    </button>
+                    <span class="title-bar__year">Calendar &gt; April 2019</span>
+
+                    <i class="far fa-calendar-alt fa-2x"></i>
+                </section>
+                <div id="chart_div"></div>
+            </div>
         </div>
     </div>
 
-    
+
 </main>
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -101,18 +114,18 @@
 
                         <div id="test" class="mx-auto d-flex-column">
                         </div>
-                        </div>
-                        <div class="md-form">
-                            <input type="number" id="hours" name="hours" class="form-control" min="0" max="24" required>
-                            <label for="hours" class="input-active">Hours</label>
-                        </div>
-                        <div class="md-form">
-                            <input type="text" id="descripton" name="descripton" class="form-control" maxlength="100" required>
-                            <label for="descripton" class="input-active">Descripton</label>
-                        </div>
-                        <div class="md-form">
-                            <input type="text" id="id" name="id" hidden>
-                        </div>
+                    </div>
+                    <div class="md-form">
+                        <input type="number" id="hours" name="hours" class="form-control" min="0" max="24" required>
+                        <label for="hours" class="input-active">Hours</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="text" id="descripton" name="descripton" class="form-control" maxlength="100" required>
+                        <label for="descripton" class="input-active">Descripton</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="text" id="id" name="id" hidden>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-success">Save</button>
@@ -136,6 +149,7 @@
             $('.show-calendar').attr("hidden", "hidden");
         });
     </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="/js/variables.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/config.js"></script>
@@ -145,5 +159,7 @@
     <script src="/js/login.js"></script>
     <script src="/js/register.js"></script>
     <script src="/js/chart.js"></script>
+    <script src="/js/gantt.js"></script>
+
 
 }

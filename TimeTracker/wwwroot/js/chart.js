@@ -1,14 +1,27 @@
-﻿var colors = ["#ff0000", "#00ff00", "#0000ff", "#0066ff", "#ff972f", "#ff2fe7"];
-var dateArray = [];
+﻿var dateArray = [];
 var dayofMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 for (var i = 0; i < dayofMonth; i++) {
 	dateArray.push(i + 1);
 }
+
 firebase.auth().onAuthStateChanged(function (user) {
 	if (user) {
         token = user.ie;
-        var arrayChart = new Array();
+        getInfo(token);
+	}
+});
 
+function getRandomColor() {
+	var letters = '0123456789ABCDEF'.split('');
+	var color = '#';
+	for (var i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
+}
+
+function getInfo() {
+        var arrayChart = new Array();
         var test = [];
         var hours = [];
 		$.ajax({
@@ -19,7 +32,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 				xhr.setRequestHeader("Authorization", "Bearer " + token);
 			},
             success: function (data) {
-	            var color = 0;
+	            gantt(data);
                 $.each(data, function (index, value) {
 	                var hours = [];
 	                for (var i = 0; i < dayofMonth; i++) {
@@ -32,15 +45,14 @@ firebase.auth().onAuthStateChanged(function (user) {
                     {
 	                    data: hours,
                         label: index,
-	                    borderColor: colors[color],
+                        borderColor: getRandomColor() ,
 	                    fill: false,
                         //hidden: true,
                         pointRadius: 6,
 	                    pointHoverRadius: 8
                         });
-                    color++;
                 });
-                var titleChart = "." + ('0' + (new Date().getMonth().toString()).slice(-2) + 1) + "." + new Date().getFullYear();
+                var titleChart = "." + ('0' + (new Date().getMonth() + 1)).slice(-2) + "." + new Date().getFullYear();
                 new Chart(document.getElementById("myChart"),
 	            {
 		            type: 'line',
@@ -65,8 +77,7 @@ firebase.auth().onAuthStateChanged(function (user) {
 			                        return label;
                                 },
                                 title: function (tooltipItem, data) {
-                                    console.log(tooltipItem[0].index+1);
-                                    var title = tooltipItem[0] ? tooltipItem[0].index + 1 : '';
+                                    var title = tooltipItem[0] ? ('0' + (tooltipItem[0].index + 1)).slice(-2) : '';
 
                                     if (title) {
                                         title += titleChart;
@@ -83,6 +94,4 @@ firebase.auth().onAuthStateChanged(function (user) {
 			}
 		})
 	}
-});
-
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Firebase.Storage;
     using Google.Cloud.Firestore;
@@ -111,16 +112,27 @@ namespace TimeTracker.Models.Repositories.Concrete
                 {
                     if (list2.ContainsKey(task2.Name))
                     {
-                        list2[task2.Name].Add(new { date = task.Key, hours = task2.Hours });
+                        if (task2.Id == list2[task2.Name].ElementAt(0).GetType().GetProperty("Id").GetValue(list2[task2.Name].ElementAt(0), null).ToString())
+                        {
+                            list2[task2.Name].Add(new { task2.Id, date = task.Key, hours = task2.Hours });
+                        }
+                        else
+                        {
+                            var tempList = new List<object>
+                            {
+                                new { task2.Id, date = task.Key, hours = task2.Hours }
+                            };
+                            list2.Add(task2.Name + "(" + task2.Description + ")", tempList);
+                        }
                     }
                     else
                     {
                         var tempList = new List<object>
                         {
-                            new { date = task.Key, hours = task2.Hours }
+                            new { task2.Id, date = task.Key, hours = task2.Hours }
                         };
                         list2.Add(task2.Name, tempList);
-                    }
+                    }   
                     
                 }
             }

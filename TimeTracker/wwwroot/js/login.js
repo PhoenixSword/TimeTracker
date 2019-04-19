@@ -16,7 +16,6 @@ function loginEmail() {
     });
 }
 function login(type) {
-	console.log(type);
 	var provider = ""
     switch (type) {
     case 1:
