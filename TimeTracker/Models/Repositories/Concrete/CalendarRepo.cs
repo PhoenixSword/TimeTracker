@@ -110,9 +110,25 @@ namespace TimeTracker.Models.Repositories.Concrete
             {
                 foreach (var task2 in task.Value)
                 {
-                    if (list2.ContainsKey(task2.Name))
+                    
+                    if (list2.ContainsKey(task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")"))
                     {
-                        if (task2.Id == list2[task2.Name].ElementAt(0).GetType().GetProperty("Id").GetValue(list2[task2.Name].ElementAt(0), null).ToString())
+                        if (task2.Id.Equals(list2[task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")"].ElementAt(0).GetType().GetProperty("Id").GetValue(list2[task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")"].ElementAt(0), null).ToString()))
+                        {
+                            list2[task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")"].Add(new { task2.Id, date = task.Key, hours = task2.Hours });
+                        }
+                        else
+                        {
+                            var tempList = new List<object>
+                            {
+                                new { task2.Id, date = task.Key, hours = task2.Hours }
+                            };
+                            list2.Add(task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")", tempList);
+                        }
+                    }
+                    else if (list2.ContainsKey(task2.Name))
+                    {
+                        if (task2.Id.Equals(list2[task2.Name].ElementAt(0).GetType().GetProperty("Id").GetValue(list2[task2.Name].ElementAt(0), null).ToString()))
                         {
                             list2[task2.Name].Add(new { task2.Id, date = task.Key, hours = task2.Hours });
                         }
@@ -122,7 +138,7 @@ namespace TimeTracker.Models.Repositories.Concrete
                             {
                                 new { task2.Id, date = task.Key, hours = task2.Hours }
                             };
-                            list2.Add(task2.Name + "(" + task2.Description + ")", tempList);
+                            list2.Add(task2.Name + "(" + task2.Description.Substring(0, task2.Description.Length >= 5 ? 5 : task2.Description.Length) + ")", tempList);
                         }
                     }
                     else
