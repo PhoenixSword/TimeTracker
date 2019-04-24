@@ -17,7 +17,6 @@ var sum = 0;
 var images = new Object();
 var prevHours;
 var arrayTest = [];
-
 const monthNames = [
 	"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November",
 	"December"

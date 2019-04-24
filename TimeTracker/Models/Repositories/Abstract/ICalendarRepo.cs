@@ -12,9 +12,10 @@ namespace TimeTracker.Models.Repositories.Abstract
         Task<IEnumerable<TaskViewModel>> GetTasks(string userId, DateTime date);
 
         Task<Dictionary<string, string>> GetAllTasks(string userId, DateTime date);
+        Task<List<object>> GetAllTasks();
 
         Task<Dictionary<string, List<object>>> GetInfo(string userId, DateTime date);
 
-        Task Save(CalendarViewModel calendarViewModel, string userId);
+        Task Save(CalendarViewModel calendarViewModel, string userId, string userName);
     }
 }

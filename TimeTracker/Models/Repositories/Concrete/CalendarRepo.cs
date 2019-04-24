@@ -7,8 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Firebase.Storage;
-    using Google.Cloud.Firestore;
-    using Google.Type;
+using Google.Cloud.Firestore;
 
 namespace TimeTracker.Models.Repositories.Concrete
 {
@@ -155,7 +154,7 @@ namespace TimeTracker.Models.Repositories.Concrete
             return list2;
         }
 
-        public async Task Save(CalendarViewModel calendarViewModel, string userId)
+        public async Task Save(CalendarViewModel calendarViewModel, string userId, string userName)
         {
             var filePath = Path.GetTempFileName();
             // ReSharper disable once RedundantAssignment
@@ -181,15 +180,19 @@ namespace TimeTracker.Models.Repositories.Concrete
             }
 
             DocumentReference tasksRef;
-
+            var usersRef = db.Collection("users").Document(userId);
+            await usersRef.SetAsync(new
+            {
+                Name = userName
+            });
             if (calendarViewModel.Id != null)
             {
-                tasksRef = db.Collection("users").Document(userId).Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
+                tasksRef = usersRef.Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
                     .ToString("MM.yyyy")).Document("tasks").Collection("tasks").Document(calendarViewModel.Id);
             }
             else
             {
-                tasksRef = db.Collection("users").Document(userId).Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
+                tasksRef = usersRef.Collection(DateTime.Parse(calendarViewModel.Date.ToString(CultureInfo.CurrentCulture))
                     .ToString("MM.yyyy")).Document("tasks").Collection("tasks").Document();
             }
 
@@ -202,18 +205,31 @@ namespace TimeTracker.Models.Repositories.Concrete
             {
                 month = calendarViewModel.Date.ToString("MM.yyyy")
             });
-            DocumentReference taskRef;
-            if (calendarViewModel.Id != null)
-            {
-                taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Id);
-            }
-            else
-            {
-                taskRef = dateRef.Collection("tasks").Document(tasksRef?.Id);
-            }
+            var taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Id ?? tasksRef?.Id);
             taskRef?.SetAsync(new { reference = tasksRef, hours = calendarViewModel.Hours }, SetOptions.MergeAll);
         }
 
+
+        public async Task<List<object>> GetAllTasks()
+        {
+            CollectionReference colRef = db.Collection("users");
+            QuerySnapshot querySnapshot = await colRef.GetSnapshotAsync();
+            List<object> list = new List<object>();
+            
+            foreach (var temp in querySnapshot)
+            {
+                IList<CollectionReference> colList = await temp.Reference.ListCollectionsAsync().ToList();
+                foreach (var temp2 in colList)
+                {
+                    var docSnapshot = await temp2.Document("tasks").Collection("tasks").GetSnapshotAsync();
+                    foreach (var temp3 in docSnapshot)
+                    {
+                        list.Add(new { id = temp3.Id, title = temp3.ToDictionary()["title"], user = temp.ToDictionary()["Name"], description = temp3.ToDictionary()["description"], downloadUrl = temp3.ToDictionary()["downloadUrl"] });
+                    }
+                }
+            }
+            return list.Select(x => x).Distinct().ToList();
+        }
     }
 }
 

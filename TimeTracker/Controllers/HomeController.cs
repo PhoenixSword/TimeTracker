@@ -49,13 +49,31 @@ namespace TimeTracker.Controllers
         }
 
         [Authorize]
+        [Route("/api/getAllUsersTasks")]
+        public async Task<List<object>> GetAllTasks()
+        {
+            return await _calendarRepo.GetAllTasks();
+        }
+
+        [Authorize]
         [Route("/api")]
         [HttpPost]
         public IActionResult Save(CalendarViewModel calendarViewModel)
         {
             if (ModelState.IsValid)
             {
-                _calendarRepo.Save(calendarViewModel, UserId);
+                var user = "";
+                var claims = User.Claims.ToDictionary(t => t.Type);
+                if (claims.ContainsKey("name"))
+                {
+                    user = claims["name"].Value;
+                }
+                else if (claims.ContainsKey("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"))
+                {
+                    user = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"].Value;
+                }
+
+                _calendarRepo.Save(calendarViewModel, UserId, user);
                 return Ok();
             }
 
@@ -78,6 +96,12 @@ namespace TimeTracker.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public async Task<IActionResult> AllTasks()
+        {
+            var tasks = await _calendarRepo.GetAllTasks();
+            return View(tasks);
         }
     }
 }

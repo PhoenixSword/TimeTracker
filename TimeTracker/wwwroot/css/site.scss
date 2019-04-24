@@ -341,3 +341,22 @@ form.login button{
 #chart_div{
     padding: 10px;
 }
+.card-task-img {
+    max-width: 100px;
+    height: auto;
+}
+.card-task{
+    padding: 20px 0 5px 0;
+    width:200px!important;
+}
+
+.modal-task {
+    cursor: pointer;
+}
+.modal-task:hover {
+    box-shadow: 0 14px 17px 0 rgba(0,0,0,.32), 0 11px 13px 0 rgba(0,0,0,.28);
+    transition: 0.3s;
+}
+.view {
+    cursor: pointer;
+}

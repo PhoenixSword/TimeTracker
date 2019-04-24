@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Calendar";
 }
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <main role="main" class="pb-3">
     <button class="btn btn-default show-calendar" hidden>Show calendar</button>
     <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
@@ -59,7 +58,6 @@
                 </section>
                 <canvas id="myChart"></canvas>
             </div>
-            
             <div class="back-hide gantt">
                 <section class="title-bar">
                     <button class="title-bar__burger">
@@ -120,8 +118,8 @@
                         <label for="hours" class="input-active">Hours</label>
                     </div>
                     <div class="md-form">
-                        <input type="text" id="descripton" name="descripton" class="form-control" maxlength="100" required>
-                        <label for="descripton" class="input-active">Descripton</label>
+                        <input type="text" id="description" name="description" class="form-control" maxlength="100" required>
+                        <label for="description" class="input-active">Description</label>
                     </div>
                     <div class="md-form">
                         <input type="text" id="id" name="id" hidden>
@@ -150,16 +148,16 @@
         });
     </script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="/js/variables.js"></script>
-    <script src="/js/navigation.js"></script>
-    <script src="/js/config.js"></script>
-    <script src="/js/auth.js"></script>
+    <script src="/js/config/config.js"></script>
+    <script src="/js/config/navigation.js"></script>
+    <script src="/js/config/variables.js"></script>
+    <script src="/js/auth/auth.js"></script>
     <script src="/js/calendar.js"></script>
     <script src="/js/modal.js"></script>
-    <script src="/js/login.js"></script>
-    <script src="/js/register.js"></script>
-    <script src="/js/chart.js"></script>
-    <script src="/js/gantt.js"></script>
+    <script src="/js/auth/login.js"></script>
+    <script src="/js/auth/register.js"></script>
+    <script src="/js/charts/chart.js"></script>
+    <script src="/js/charts/gantt.js"></script>
 
-
+ 
 }

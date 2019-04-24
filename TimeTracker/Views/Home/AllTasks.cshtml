@@ -1,0 +1,153 @@
+﻿@{
+    ViewData["Title"] = "AllTasks";
+}
+@model List<object>
+<h1>All Tasks</h1>
+<div class="d-flex flex-row flex-wrap">
+    @foreach (var item in @Model)
+    {
+        var url = item.GetType().GetProperty("downloadUrl").GetValue(item, null).ToString();
+        <div class="card card-task mb-4 mx-2 modal-task">
+
+            <div class="view overlay">
+                <img class="card-img-top card-task-img mx-auto" src="@(url != "" ? url : "/task.png")" alt="Task" title="@item.GetType().GetProperty("title").GetValue(item, null).ToString()">
+            </div>
+
+            <div class="card-body text-center">
+                <h4 class="card-title">@item.GetType().GetProperty("title").GetValue(item, null).ToString()</h4>
+                @{ var desc = item.GetType().GetProperty("description").GetValue(item, null).ToString();}
+                <h6 class="card-title">@desc.Substring(0, desc.Length > 20 ? 20 : desc.Length)</h6>
+                <p class="card-text">@item.GetType().GetProperty("user").GetValue(item, null).ToString()</p>
+                <input value="@item.GetType().GetProperty("id").GetValue(item, null).ToString()" readonly hidden/>
+            </div>
+
+        </div>
+    }
+</div>
+
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+    <!-- Add .modal-dialog-centered to .modal-dialog to vertically center the modal -->
+    <div class="modal-dialog modal-dialog-centered" role="document">
+
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Time Tracker</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="font-weight-bold">&times;</span>
+                </button>
+            </div>
+
+            <form class="modal-form" onsubmit="return false;">
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" hidden></div>
+                    <div>
+                        <div class="example-1">
+                        </div>
+                    </div>
+                    <div class="md-form">
+                        <input type="date" id="date" name="date" class="form-control" required>
+                        <label for="date" class="input-active">Date</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="text" id="name" name="name" class="form-control" maxlength="30" list="datalist" required readonly>
+                        <label for="name" class="input-active">Name</label>
+
+                        <div id="test" class="mx-auto d-flex-column">
+                        </div>
+                    </div>
+                    <div class="md-form">
+                        <input type="number" id="hours" name="hours" class="form-control" min="0" max="24" required>
+                        <label for="hours" class="input-active">Hours</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="text" id="description" name="description" class="form-control" maxlength="100" required readonly>
+                        <label for="description" class="input-active">Description</label>
+                    </div>
+                    <div class="md-form">
+                        <input type="text" id="id" name="id" hidden>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<button data-toggle="modal" data-target="#exampleModalCenter" hidden="hidden" id="modal"></button>
+
+@section Scripts
+{
+    <script src="/js/config/variables.js"></script>
+    <script src="/js/config/config.js"></script>
+    <script src="/js/auth/auth.js"></script>
+    <script>
+    var fields;
+    $('body').delegate('.modal-task', 'click', function () {
+        fields = $(this).children(1).children();
+        inputName.val(fields.eq(1).html());
+        inputDescription.val(fields.eq(2).html());
+        inputId.val(fields.eq(4).val());
+        $('.example-1').css('background', `url("${fields.eq(0).attr("src")}") no-repeat`);
+        $('.example-1').css('background-size', `cover`);
+        $('.example-1').css('width', `100px`);
+        $('.example-1').css('height', `100px`);
+        toggleModal.click();
+        });
+
+        $('body').delegate('.modal-form button','click',function () {
+            if (modalForm[0].checkValidity()) {
+                var form = modalForm.serializeArray();
+                var data = new FormData();
+                console.log(form);
+                data.append("date", form[0].value);
+                data.append("name", form[1].value);
+                data.append("hours", form[2].value);
+                data.append("description", form[3].value);
+                data.append("id", form[4].value);
+                data.append("downloadUrl", fields.eq(0).attr("src"));
+                $.ajax({
+                    url: '/api',
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: data,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                        saveButton.attr("disabled", true);
+                        saveButton.html(
+                            `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...`);
+                    },
+                    success: function (data) {
+                        if (!data) {
+                            setTimeout(function () {
+                                toggleModal.click();
+                                saveButton.attr("disabled", false);
+                                saveButton.html("Save");
+                                inputName.val("");
+                                inputDescription.val("");
+                                inputId.val("");
+                                $('.example-1').css('background', `#fff`);
+                            },1000);
+                        } else {
+                            saveButton.attr("disabled", false);
+                            saveButton.html("Save");
+                            if (data.length > 1) {
+                                $('.alert.alert-danger').removeAttr("hidden");
+                                spanError.html(data[0] + "<br/>" + data[1]);
+                            } else {
+                                $('.alert.alert-danger').removeAttr("hidden");
+                                spanError.html(data);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}
