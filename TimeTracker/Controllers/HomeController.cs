@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,8 +12,8 @@ namespace TimeTracker.Controllers
     public class HomeController : Controller
     {
         private readonly ICalendarRepo _calendarRepo;
-        private string UserId => User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
+        //private string UserId => User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        private string UserId = "";
         public HomeController(ICalendarRepo calendarRepo)
         {
             _calendarRepo = calendarRepo;
@@ -96,6 +95,11 @@ namespace TimeTracker.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        public string Test(string name)
+        {
+            return name;
         }
 
         public async Task<IActionResult> AllTasks()

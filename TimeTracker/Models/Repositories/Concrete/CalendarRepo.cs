@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Firebase.Storage;
 using Google.Cloud.Firestore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TimeTracker.Models.Repositories.Concrete
 {
@@ -208,7 +209,6 @@ namespace TimeTracker.Models.Repositories.Concrete
             var taskRef = dateRef.Collection("tasks").Document(calendarViewModel.Id ?? tasksRef?.Id);
             taskRef?.SetAsync(new { reference = tasksRef, hours = calendarViewModel.Hours }, SetOptions.MergeAll);
         }
-
 
         public async Task<List<object>> GetAllTasks()
         {

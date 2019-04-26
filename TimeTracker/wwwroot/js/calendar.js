@@ -26,7 +26,6 @@ function getCalendar(type) {
     if (date.getMonth() + 1 === new Date().getMonth() + 1) var today = date.getDate(); else var today = "";
 	var calendar = "";
 	
-
 	var month = monthNames[date.getMonth()];
 	var year = date.getFullYear();
 	var days = new Date(year, date.getMonth() + 1, 0).getDate();
@@ -57,7 +56,7 @@ function getCalendar(type) {
 		}
 	}
 
-	calendar += `</section><section class="calendar__week">`;
+	calendar += `</section><section class="calendar__week">`;   
 
 
 	for (var i = 0, j = 7 - dayOfWeekNumber + 2; i < 35; i++, j++) {
