@@ -13,7 +13,7 @@ namespace TimeTracker.Controllers
     {
         private readonly ICalendarRepo _calendarRepo;
         //private string UserId => User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        private string UserId = "";
+        public string UserId = "";
         public HomeController(ICalendarRepo calendarRepo)
         {
             _calendarRepo = calendarRepo;
