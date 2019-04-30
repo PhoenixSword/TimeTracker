@@ -8,7 +8,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Firebase.Storage;
 using Google.Cloud.Firestore;
-using Microsoft.AspNetCore.Authorization;
 
 namespace TimeTracker.Models.Repositories.Concrete
 {
