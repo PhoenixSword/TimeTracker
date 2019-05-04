@@ -1,4 +1,6 @@
 ﻿$('#test').hide(100);
+var username = "";
+var tok = "";
 var token = "";
 var inputImage = $('.modal-body').children().children().eq(0);
 var inputDate = $('.modal-body').children().children().eq(1);

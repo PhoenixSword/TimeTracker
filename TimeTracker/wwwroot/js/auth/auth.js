@@ -1,11 +1,14 @@
-﻿
-var date = new Date();
+﻿var date = new Date();
 if (!firebase.apps.length) {
 	firebase.initializeApp(config);
 }
+
 firebase.auth().onAuthStateChanged(function (user) {
-	if (user) {
+    if (user) {
         token = user.ie;
+        $('#chat').show();
+        chat();
+        username = user.displayName ? user.displayName : user.email;
         singin = `<button class="btn my-0 py-0 mx-2 text-white">${user.displayName ? user.displayName : user.email}</button>
                         <button class="btn my-0 py-0 mx-2 text-white" style="height: 26px;" onclick=logOut()>Logout</button>`;
 		document.getElementById('name').innerHTML = singin;

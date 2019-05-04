@@ -123,5 +123,4 @@ function getCalendar(type) {
 		    });
 	    }
     });
-
 }

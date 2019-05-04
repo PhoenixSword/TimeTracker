@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Threading.Tasks;
 using TimeTracker.Models;
 using TimeTracker.Models.Repositories.Abstract;
 using TimeTracker.Models.Repositories.Concrete;
@@ -54,19 +56,30 @@ namespace TimeTracker
                         ValidAudience = "timetracker-31fe5",
                         ValidateLifetime = true
                     };
-                })
-                .AddJwtBearer("Custom", options =>
-                {
-                    // Configuration for your custom
-                    // JWT tokens here
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // если запрос направлен хабу
+                            if (!string.IsNullOrEmpty(accessToken))
+                            {
+                                // получаем токен из строки запроса
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
+
                 });
 
-            services
-                .AddAuthorization(options =>
+            services.AddAuthorization(options =>
                 {
                     options.DefaultPolicy = new AuthorizationPolicyBuilder()
                         .RequireAuthenticatedUser()
-                        .AddAuthenticationSchemes("Firebase", "Custom")
+                        .AddAuthenticationSchemes("Firebase")
                         .Build();
 
                     options.AddPolicy("FirebaseAdministrators", new AuthorizationPolicyBuilder()
@@ -75,9 +88,10 @@ namespace TimeTracker
                         .RequireClaim("role", "admin")
                         .Build());
                 });
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<ICalendarRepo, CalendarRepo>();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,6 +113,7 @@ namespace TimeTracker
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseStatusCodePagesWithReExecute("/Home/Error");
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -108,6 +123,10 @@ namespace TimeTracker
                     "default2", 
                     "/{action}", 
                     defaults: new { controller = "Home", action = "Index" });
+            });
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<ChatHub>("/chat");
             });
         }
     }
